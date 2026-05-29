@@ -1,6 +1,7 @@
 excluded:
   - .build
   - DerivedData
+  - BankApp/BankApp/Utilities/AppStrings.swift
 
 disabled_rules:
   - trailing_whitespace
@@ -56,5 +57,12 @@ custom_rules:
     regex: 'DispatchQueue'
     message: "Use async/await instead (Swift 6.2)"
     severity: error
+
+  no_magic_localized_strings:
+    name: "No Magic Localized Strings"
+    regex: 'String\(localized:'
+    message: "Use AppStrings enum instead of String(localized:) directly."
+    severity: error
+    excluded: [".*AppStrings\\.swift"]
 
 reporter: xcode
