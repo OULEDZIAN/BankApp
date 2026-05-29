@@ -1,0 +1,15 @@
+#!/bin/sh
+
+commit_msg=$(cat "$1")
+
+pattern="^(feat|fix|test|refactor|docs|chore|ci|style|perf|build|revert)(\(.+\))?: .+"
+
+if ! echo "$commit_msg" | grep -qE "$pattern"; then
+    echo "Invalid commit message format."
+    echo "Expected: type(scope): description"
+    echo "Types: feat, fix, test, refactor, docs, chore, ci, style, perf, build, revert"
+    echo "Example: feat(service): add NetworkBankService with fallback"
+    exit 1
+fi
+
+exit 0

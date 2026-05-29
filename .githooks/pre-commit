@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "✅ pre-commit hook passed"
+exit 0
