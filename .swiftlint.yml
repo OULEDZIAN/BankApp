@@ -1,0 +1,60 @@
+excluded:
+  - .build
+  - DerivedData
+
+disabled_rules:
+  - trailing_whitespace
+  - void_return
+  - opening_brace
+  - vertical_whitespace
+
+opt_in_rules:
+  - force_unwrapping
+  - force_cast
+  - force_try
+  - implicitly_unwrapped_optional
+  - fatal_error_message
+  - empty_count
+  - redundant_type_annotation
+  - explicit_init
+  - accessibility_label_for_image
+  - accessibility_trait_for_button
+  - prefer_self_in_static_references
+  - toggle_bool
+
+force_unwrapping: error
+force_cast: error
+force_try: error
+
+line_length:
+  warning: 120
+  error: 200
+  ignores_comments: true
+  ignores_urls: true
+
+custom_rules:
+  no_magic_color_strings:
+    name: "No Magic Color Strings"
+    regex: 'Color\("([^"]+)"\)'
+    message: "Use AppColors enum instead."
+    severity: error
+
+  no_observable_object:
+    name: "No ObservableObject"
+    regex: 'ObservableObject'
+    message: "Use @Observable macro instead (Swift 6.2)"
+    severity: error
+
+  no_published:
+    name: "No @Published"
+    regex: '@Published'
+    message: "Use @Observable instead of @Published (Swift 6.2)"
+    severity: error
+
+  no_dispatch_queue:
+    name: "No DispatchQueue"
+    regex: 'DispatchQueue'
+    message: "Use async/await instead (Swift 6.2)"
+    severity: error
+
+reporter: xcode
