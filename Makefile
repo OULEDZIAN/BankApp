@@ -1,6 +1,6 @@
 PROJECT = BankApp/BankApp.xcodeproj
 SCHEME = BankApp
-DESTINATION = platform=iOS Simulator,name=Any iOS Simulator Device,OS=latest
+DESTINATION = platform=iOS Simulator,name=iPhone 17
 
 lint:
 	swiftlint lint
