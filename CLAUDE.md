@@ -49,6 +49,15 @@ Always use AppColors enum via Color extensions.
 To add a new color: add to Assets.xcassets first,
 then add case to AppColors, then add static extension on Color.
 
+## Localization
+Never use String(localized:) or NSLocalizedString directly in code.
+Always use AppStrings enum from Utilities/AppStrings.swift.
+Example: AppStrings.Section.creditAgricole, AppStrings.Error.decodingFailed
+To add a new string:
+1. Add the key to Resources/Localizable.xcstrings (FR + EN)
+2. Add a static let to the appropriate AppStrings enum
+SwiftLint will block any direct String(localized:) usage outside AppStrings.swift.
+
 ## Services
 - BankServiceProtocol defines the contract
 - NetworkBankService fetches from Firebase URL

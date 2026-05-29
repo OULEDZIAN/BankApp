@@ -7,12 +7,6 @@
 
 import Testing
 
-struct BankAppTests {
-
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-        // Swift Testing Documentation
-        // https://developer.apple.com/documentation/testing
-    }
-
-}
+// Tests are organized per feature in dedicated files:
+// - ServiceTests.swift → BankServiceProtocol, MockBankService
+// Additional test files will be added as new features are implemented.

@@ -20,7 +20,6 @@ struct Bank: Codable, Identifiable {
     let isCA: Int
     let accounts: [Account]
 
-    /// Identifiable
     var id: String { name }
 
     /// Indicates whether this bank belongs to the Crédit Agricole group
@@ -48,12 +47,8 @@ struct Account: Codable, Identifiable {
         case balance, operations
     }
 
-    /// Formatted balance in euros using French locale
     var formattedBalance: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "fr_FR")
-        return formatter.string(from: NSNumber(value: balance)) ?? "\(balance) €"
+        balance.formattedAsCurrency
     }
 }
 
@@ -72,7 +67,6 @@ struct Operation: Codable, Identifiable {
         return Date(timeIntervalSince1970: interval)
     }
 
-    /// Formatted date for display
     var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy"
@@ -80,7 +74,10 @@ struct Operation: Codable, Identifiable {
         return formatter.string(from: timestamp)
     }
 
-    /// Returns true if the amount is negative — used to apply red color in UI
+    var formattedAmount: String {
+        amount.formattedAsCurrency
+    }
+
     var isNegative: Bool {
         amount.hasPrefix("-")
     }
