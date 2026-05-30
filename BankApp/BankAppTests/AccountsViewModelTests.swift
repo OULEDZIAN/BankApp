@@ -167,4 +167,123 @@ struct AccountsViewModelTests {
             #expect(viewModel.otherBanks.count == 1)
         }
     }
+
+    @Suite("RG03 — Sorting")
+    struct Sorting {
+        @MainActor @Test func creditAgricoleBanks_sortedAlphabetically() async {
+            let banks = [
+                Bank(name: "CA Sud", isCA: 1, accounts: []),
+                Bank(name: "CA Centre", isCA: 1, accounts: []),
+                Bank(name: "CA Languedoc", isCA: 1, accounts: [])
+            ]
+            let service = MockBankService(result: .success(banks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            let names = viewModel.creditAgricoleBanks.map(\.name)
+            #expect(names == ["CA Centre", "CA Languedoc", "CA Sud"])
+        }
+
+        @MainActor @Test func otherBanks_sortedAlphabetically() async {
+            let banks = [
+                Bank(name: "Société Générale", isCA: 0, accounts: []),
+                Bank(name: "BNP Paribas", isCA: 0, accounts: []),
+                Bank(name: "Boursorama", isCA: 0, accounts: [])
+            ]
+            let service = MockBankService(result: .success(banks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            let names = viewModel.otherBanks.map(\.name)
+            #expect(names == ["BNP Paribas", "Boursorama", "Société Générale"])
+        }
+
+        @MainActor @Test func alreadySorted_remainsUnchanged() async {
+            let banks = [
+                Bank(name: "CA Alpha", isCA: 1, accounts: []),
+                Bank(name: "CA Beta", isCA: 1, accounts: [])
+            ]
+            let service = MockBankService(result: .success(banks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            let names = viewModel.creditAgricoleBanks.map(\.name)
+            #expect(names == ["CA Alpha", "CA Beta"])
+        }
+
+        @MainActor @Test func reverseSorted_getsCorrected() async {
+            let banks = [
+                Bank(name: "CA Zèbre", isCA: 1, accounts: []),
+                Bank(name: "CA Azur", isCA: 1, accounts: [])
+            ]
+            let service = MockBankService(result: .success(banks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            let names = viewModel.creditAgricoleBanks.map(\.name)
+            #expect(names == ["CA Azur", "CA Zèbre"])
+        }
+
+        @MainActor @Test func singleBank_returnsSingleElement() async {
+            let banks = [
+                Bank(name: "CA Unique", isCA: 1, accounts: [])
+            ]
+            let service = MockBankService(result: .success(banks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            #expect(viewModel.creditAgricoleBanks.count == 1)
+            #expect(viewModel.creditAgricoleBanks[0].name == "CA Unique")
+        }
+
+        @MainActor @Test func emptyList_returnsEmpty() async {
+            let service = MockBankService(result: .success([]))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            #expect(viewModel.creditAgricoleBanks.isEmpty)
+            #expect(viewModel.otherBanks.isEmpty)
+        }
+
+        @MainActor @Test func sameFirstLetter_sortsByFullName() async {
+            let banks = [
+                Bank(name: "Banque Pop", isCA: 0, accounts: []),
+                Bank(name: "Boursorama", isCA: 0, accounts: []),
+                Bank(name: "BNP Paribas", isCA: 0, accounts: [])
+            ]
+            let service = MockBankService(result: .success(banks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            let names = viewModel.otherBanks.map(\.name)
+            #expect(names == ["BNP Paribas", "Banque Pop", "Boursorama"])
+        }
+
+        @MainActor @Test func endToEnd_bothSectionsSortedAfterFetch() async {
+            let banks = [
+                Bank(name: "CA Sud", isCA: 1, accounts: []),
+                Bank(name: "Société Générale", isCA: 0, accounts: []),
+                Bank(name: "CA Centre", isCA: 1, accounts: []),
+                Bank(name: "BNP Paribas", isCA: 0, accounts: []),
+                Bank(name: "CA Languedoc", isCA: 1, accounts: []),
+                Bank(name: "Boursorama", isCA: 0, accounts: [])
+            ]
+            let service = MockBankService(result: .success(banks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            let caNames = viewModel.creditAgricoleBanks.map(\.name)
+            let otherNames = viewModel.otherBanks.map(\.name)
+            #expect(caNames == ["CA Centre", "CA Languedoc", "CA Sud"])
+            #expect(otherNames == ["BNP Paribas", "Boursorama", "Société Générale"])
+        }
+    }
 }

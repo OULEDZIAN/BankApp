@@ -18,11 +18,11 @@ final class AccountsViewModel {
     var state: LoadingState = .idle
 
     var creditAgricoleBanks: [Bank] {
-        allBanks.filter { $0.isCreditAgricole }
+        allBanks.filter { $0.isCreditAgricole }.sorted { $0.name < $1.name }
     }
 
     var otherBanks: [Bank] {
-        allBanks.filter { !$0.isCreditAgricole }
+        allBanks.filter { !$0.isCreditAgricole }.sorted { $0.name < $1.name }
     }
 
     init(service: BankServiceProtocol = NetworkBankService()) {
