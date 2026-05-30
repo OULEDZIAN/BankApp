@@ -129,13 +129,42 @@ struct AccountsViewModelTests {
         @MainActor @Test func toggleExpand_independentPerBank() {
             let service = MockBankService(result: .success(mockBanks))
             let viewModel = AccountsViewModel(service: service)
-            
+
             viewModel.toggleExpand(bankName: "Crédit Agricole Centre")
             viewModel.toggleExpand(bankName: "BNP Paribas")
-            
+
             #expect(viewModel.isExpanded(bankName: "Crédit Agricole Centre"))
             #expect(viewModel.isExpanded(bankName: "BNP Paribas"))
             #expect(!viewModel.isExpanded(bankName: "Crédit Agricole Sud"))
+        }
+    }
+
+    @Suite("RG02 — Sections")
+    struct Sections {
+        private let mockBanks = [
+            Bank(name: "Crédit Agricole Centre", isCA: 1, accounts: []),
+            Bank(name: "Crédit Agricole Sud", isCA: 1, accounts: []),
+            Bank(name: "BNP Paribas", isCA: 0, accounts: [])
+        ]
+
+        @MainActor @Test func creditAgricoleBanks_appearsInFirstSection() async {
+            let service = MockBankService(result: .success(mockBanks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            #expect(!viewModel.creditAgricoleBanks.isEmpty)
+            #expect(viewModel.creditAgricoleBanks.count == 2)
+        }
+
+        @MainActor @Test func otherBanks_appearsInSecondSection() async {
+            let service = MockBankService(result: .success(mockBanks))
+            let viewModel = AccountsViewModel(service: service)
+
+            await viewModel.fetchBanks()
+
+            #expect(!viewModel.otherBanks.isEmpty)
+            #expect(viewModel.otherBanks.count == 1)
         }
     }
 }
