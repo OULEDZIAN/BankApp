@@ -11,7 +11,7 @@ struct BankRowView: View {
     let bank: Bank
     let isExpanded: Bool
     let onToggle: () -> Void
-
+    
     var body: some View {
         Button(action: onToggle) {
             HStack {

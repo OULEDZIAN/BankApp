@@ -42,13 +42,29 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No connection. Displayed data may not be up to date."
+            "value" : "Unable to load your accounts."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connexion indisponible. Les données affichées peuvent ne pas être à jour."
+            "value" : "Impossible de charger vos comptes."
+          }
+        }
+      }
+    },
+    "error.pullToRefresh" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pull down to try again."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tirez vers le bas pour réessayer."
           }
         }
       }

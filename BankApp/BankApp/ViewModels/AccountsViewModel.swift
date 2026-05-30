@@ -30,7 +30,10 @@ final class AccountsViewModel {
     }
 
     func fetchBanks() async {
-        state = .loading
+        let isRefresh = if case .loaded = state { true } else { false }
+        if !isRefresh {
+            state = .loading
+        }
         do {
             let banks = try await service.fetchBanks()
             allBanks = banks

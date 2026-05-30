@@ -9,11 +9,11 @@ import SwiftUI
 
 struct AccountsListView: View {
     @State private var viewModel: AccountsViewModel
-
+    
     init(viewModel: AccountsViewModel = AccountsViewModel()) {
         self._viewModel = State(initialValue: viewModel)
     }
-
+    
     var body: some View {
         NavigationStack {
             content
@@ -24,29 +24,38 @@ struct AccountsListView: View {
             await viewModel.fetchBanks()
         }
     }
-
+    
     @ViewBuilder
     private var content: some View {
         switch viewModel.state {
         case .idle, .loading:
             ProgressView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-
+            
         case .loaded:
             bankList
-
+                .refreshable {
+                    await viewModel.fetchBanks()
+                }
+            
         case .error(let error):
             let icon = switch error {
             case .networkUnavailable: "wifi.slash"
             case .decodingFailed: "exclamationmark.triangle"
             }
-            ContentUnavailableView(
-                error.errorDescription ?? "",
-                systemImage: icon
-            )
+            ScrollView {
+                ContentUnavailableView {
+                    Label(error.errorDescription ?? "", systemImage: icon)
+                } description: {
+                    Text(AppStrings.Error.pullToRefresh)
+                }
+            }
+            .refreshable {
+                await viewModel.fetchBanks()
+            }
         }
     }
-
+    
     private var bankList: some View {
         List {
             ForEach(viewModel.allBanks) { bank in
@@ -61,52 +70,83 @@ struct AccountsListView: View {
 }
 
 #Preview("Loading") {
-    let service = PreviewBankService(state: .loading)
+    let service = PreviewLoadingService()
     AccountsListView(viewModel: AccountsViewModel(service: service))
 }
 
 #Preview("Loaded") {
-    let service = PreviewBankService(state: .loaded)
+    let service = PreviewLoadedService()
     AccountsListView(viewModel: AccountsViewModel(service: service))
 }
 
-#Preview("Error") {
-    let service = PreviewBankService(state: .error)
+#Preview("Error - Network") {
+    let service = PreviewErrorService(error: .networkUnavailable)
     AccountsListView(viewModel: AccountsViewModel(service: service))
 }
 
-/// Preview-only service for simulating different states.
-private struct PreviewBankService: BankServiceProtocol {
-    enum PreviewState {
-        case loading, loaded, error
-    }
+#Preview("Error - Decoding") {
+    let service = PreviewErrorService(error: .decodingFailed)
+    AccountsListView(viewModel: AccountsViewModel(service: service))
+}
 
-    let state: PreviewState
+// MARK: - Preview Services
 
+private struct PreviewLoadingService: BankServiceProtocol {
     func fetchBanks() async throws(BankError) -> [Bank] {
-        switch state {
-        case .loading:
-            try? await Task.sleep(for: .seconds(999))
-            return []
-        case .loaded:
-            return [
-                Bank(name: "Crédit Agricole Centre", isCA: 1, accounts: [
-                    Account(
-                        order: 0, id: "1", holder: "Jean Dupont", role: 1,
-                        contractNumber: "CT001", label: "Compte Courant",
-                        productCode: "CC", balance: 1234.56, operations: []
-                    )
-                ]),
-                Bank(name: "BNP Paribas", isCA: 0, accounts: [
-                    Account(
-                        order: 0, id: "2", holder: "Jean Dupont", role: 1,
-                        contractNumber: "CT002", label: "Livret A",
-                        productCode: "LA", balance: -45.30, operations: []
-                    )
-                ])
-            ]
-        case .error:
-            throw .networkUnavailable
-        }
+        try? await Task.sleep(for: .seconds(999))
+        return []
+    }
+}
+
+private struct PreviewLoadedService: BankServiceProtocol {
+    func fetchBanks() async throws(BankError) -> [Bank] {
+        [
+            Bank(name: "CA Languedoc", isCA: 1, accounts: [
+                Account(
+                    order: 0, id: "1", holder: "Jean Dupont", role: 1,
+                    contractNumber: "CT001", label: "Compte de dépôt",
+                    productCode: "CD", balance: 2031.84, operations: []
+                ),
+                Account(
+                    order: 1, id: "2", holder: "Jean Dupont", role: 1,
+                    contractNumber: "CT002", label: "Compte joint",
+                    productCode: "CJ", balance: 843.15, operations: []
+                ),
+                Account(
+                    order: 2, id: "3", holder: "Jean Dupont", role: 1,
+                    contractNumber: "CT003", label: "Compte Mozaïc",
+                    productCode: "CM", balance: 209.39, operations: []
+                )
+            ]),
+            Bank(name: "CA Centre-Est", isCA: 1, accounts: [
+                Account(
+                    order: 0, id: "4", holder: "Jean Dupont", role: 1,
+                    contractNumber: "CT004", label: "Compte de dépôt",
+                    productCode: "CD", balance: 425.84, operations: []
+                )
+            ]),
+            Bank(name: "Boursorama", isCA: 0, accounts: [
+                Account(
+                    order: 0, id: "5", holder: "Jean Dupont", role: 1,
+                    contractNumber: "CT005", label: "Compte de dépôt",
+                    productCode: "CD", balance: 45.84, operations: []
+                )
+            ]),
+            Bank(name: "Banque Pop", isCA: 0, accounts: [
+                Account(
+                    order: 0, id: "6", holder: "Jean Dupont", role: 1,
+                    contractNumber: "CT006", label: "Compte Chèques",
+                    productCode: "CC", balance: 675.04, operations: []
+                )
+            ])
+        ]
+    }
+}
+
+private struct PreviewErrorService: BankServiceProtocol {
+    let error: BankError
+    
+    func fetchBanks() async throws(BankError) -> [Bank] {
+        throw error
     }
 }
