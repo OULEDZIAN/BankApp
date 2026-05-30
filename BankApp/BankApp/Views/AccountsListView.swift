@@ -58,12 +58,28 @@ struct AccountsListView: View {
     
     private var bankList: some View {
         List {
-            ForEach(viewModel.allBanks) { bank in
-                BankRowView(
-                    bank: bank,
-                    isExpanded: viewModel.isExpanded(bankName: bank.name),
-                    onToggle: { viewModel.toggleExpand(bankName: bank.name) }
-                )
+            if !viewModel.creditAgricoleBanks.isEmpty {
+                Section(AppStrings.Section.creditAgricole) {
+                    ForEach(viewModel.creditAgricoleBanks) { bank in
+                        BankRowView(
+                            bank: bank,
+                            isExpanded: viewModel.isExpanded(bankName: bank.name),
+                            onToggle: { viewModel.toggleExpand(bankName: bank.name) }
+                        )
+                    }
+                }
+            }
+
+            if !viewModel.otherBanks.isEmpty {
+                Section(AppStrings.Section.otherBanks) {
+                    ForEach(viewModel.otherBanks) { bank in
+                        BankRowView(
+                            bank: bank,
+                            isExpanded: viewModel.isExpanded(bankName: bank.name),
+                            onToggle: { viewModel.toggleExpand(bankName: bank.name) }
+                        )
+                    }
+                }
             }
         }
     }
