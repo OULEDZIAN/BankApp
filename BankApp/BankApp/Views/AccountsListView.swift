@@ -59,7 +59,7 @@ struct AccountsListView: View {
     private var bankList: some View {
         List {
             if !viewModel.creditAgricoleBanks.isEmpty {
-                Section(AppStrings.Section.creditAgricole) {
+                Section {
                     ForEach(viewModel.creditAgricoleBanks) { bank in
                         BankRowView(
                             bank: bank,
@@ -67,11 +67,14 @@ struct AccountsListView: View {
                             onToggle: { viewModel.toggleExpand(bankName: bank.name) }
                         )
                     }
+                } header: {
+                    Text(AppStrings.Section.creditAgricole)
+                        .foregroundStyle(.primary)
                 }
             }
 
             if !viewModel.otherBanks.isEmpty {
-                Section(AppStrings.Section.otherBanks) {
+                Section {
                     ForEach(viewModel.otherBanks) { bank in
                         BankRowView(
                             bank: bank,
@@ -79,6 +82,9 @@ struct AccountsListView: View {
                             onToggle: { viewModel.toggleExpand(bankName: bank.name) }
                         )
                     }
+                } header: {
+                    Text(AppStrings.Section.otherBanks)
+                        .foregroundStyle(.primary)
                 }
             }
         }
