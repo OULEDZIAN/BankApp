@@ -53,11 +53,42 @@ struct Account: Codable, Identifiable {
 // MARK: - Operation
 
 struct Operation: Codable, Identifiable {
-    let id: String
+    let id: UUID
+    let operationId: String
     let title: String
     let amount: String
     let category: String
     let date: String
+
+    enum CodingKeys: String, CodingKey {
+        case operationId = "id"
+        case title, amount, category, date
+    }
+
+    init(
+        operationId: String,
+        title: String,
+        amount: String,
+        category: String,
+        date: String
+    ) {
+        self.id = UUID()
+        self.operationId = operationId
+        self.title = title
+        self.amount = amount
+        self.category = category
+        self.date = date
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
+        self.operationId = try container.decode(String.self, forKey: .operationId)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.amount = try container.decode(String.self, forKey: .amount)
+        self.category = try container.decode(String.self, forKey: .category)
+        self.date = try container.decode(String.self, forKey: .date)
+    }
 
     /// Converts the raw Unix timestamp string into a Swift Date
     var timestamp: Date {
