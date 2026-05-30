@@ -24,8 +24,8 @@ struct NetworkBankService: BankServiceProtocol {
         }
 
         do {
-            let response = try JSONDecoder().decode(BankResponse.self, from: data)
-            return response.banks
+            let banks = try JSONDecoder().decode([Bank].self, from: data)
+            return banks
         } catch {
             throw .decodingFailed
         }
