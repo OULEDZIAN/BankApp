@@ -19,6 +19,15 @@ extension NumberFormatter {
     }()
 }
 
+extension DateFormatter {
+    static let dateFR: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy"
+        formatter.locale = Locale(identifier: "fr_FR")
+        return formatter
+    }()
+}
+
 // MARK: - Whitespace Normalization
 
 private extension String {

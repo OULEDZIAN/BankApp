@@ -56,16 +56,30 @@ struct AccountsListView: View {
         }
     }
     
+    @ViewBuilder
+    private func bankCell(_ bank: Bank) -> some View {
+        BankRowView(
+            bank: bank,
+            isExpanded: viewModel.isExpanded(bankName: bank.name),
+            onToggle: {
+                withAnimation {
+                    viewModel.toggleExpand(bankName: bank.name)
+                }
+            }
+        )
+        if viewModel.isExpanded(bankName: bank.name) {
+            ForEach(bank.sortedAccounts) { account in
+                AccountRowView(account: account)
+            }
+        }
+    }
+
     private var bankList: some View {
         List {
             if !viewModel.creditAgricoleBanks.isEmpty {
                 Section {
                     ForEach(viewModel.creditAgricoleBanks) { bank in
-                        BankRowView(
-                            bank: bank,
-                            isExpanded: viewModel.isExpanded(bankName: bank.name),
-                            onToggle: { viewModel.toggleExpand(bankName: bank.name) }
-                        )
+                        bankCell(bank)
                     }
                 } header: {
                     Text(AppStrings.Section.creditAgricole)
@@ -76,11 +90,7 @@ struct AccountsListView: View {
             if !viewModel.otherBanks.isEmpty {
                 Section {
                     ForEach(viewModel.otherBanks) { bank in
-                        BankRowView(
-                            bank: bank,
-                            isExpanded: viewModel.isExpanded(bankName: bank.name),
-                            onToggle: { viewModel.toggleExpand(bankName: bank.name) }
-                        )
+                        bankCell(bank)
                     }
                 } header: {
                     Text(AppStrings.Section.otherBanks)

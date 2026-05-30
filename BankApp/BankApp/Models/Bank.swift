@@ -7,12 +7,6 @@
 
 import Foundation
 
-// MARK: - Root Response
-
-struct BankResponse: Codable {
-    let banks: [Bank]
-}
-
 // MARK: - Bank
 
 struct Bank: Codable, Identifiable {
@@ -24,6 +18,10 @@ struct Bank: Codable, Identifiable {
 
     /// Indicates whether this bank belongs to the Crédit Agricole group
     var isCreditAgricole: Bool { isCA == 1 }
+
+    var sortedAccounts: [Account] {
+        accounts.sorted { $0.order < $1.order }
+    }
 }
 
 // MARK: - Account
@@ -68,10 +66,7 @@ struct Operation: Codable, Identifiable {
     }
 
     var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy"
-        formatter.locale = Locale(identifier: "fr_FR")
-        return formatter.string(from: timestamp)
+        DateFormatter.dateFR.string(from: timestamp)
     }
 
     var formattedAmount: String {
