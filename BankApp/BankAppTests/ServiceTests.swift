@@ -26,6 +26,7 @@ struct MockBankService: BankServiceProtocol {
 
 // MARK: - Tests
 
+@Suite("BankService")
 struct ServiceTests {
     @Test func successfulFetchReturnsNonEmptyArray() async throws {
         let mockBanks = [

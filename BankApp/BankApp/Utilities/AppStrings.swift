@@ -14,6 +14,7 @@ enum AppStrings {
     enum Error {
         static let networkUnavailable = String(localized: "error.networkUnavailable")
         static let decodingFailed = String(localized: "error.decodingFailed")
+        static let pullToRefresh = String(localized: "error.pullToRefresh")
     }
     enum Section {
         static let creditAgricole = String(localized: "section.creditAgricole")

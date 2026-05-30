@@ -8,10 +8,12 @@
 import Foundation
 
 /// Fetches and groups bank accounts by Crédit Agricole vs other banks (RG00).
+/// Manages expand/collapse state for each bank row (RG01).
 @Observable
 final class AccountsViewModel {
     private let service: BankServiceProtocol
-    private var allBanks: [Bank] = []
+    private(set) var allBanks: [Bank] = []
+    private var expandedBanks: Set<String> = []
 
     var state: LoadingState = .idle
 
@@ -28,15 +30,30 @@ final class AccountsViewModel {
     }
 
     func fetchBanks() async {
-        state = .loading
+        let isRefresh = if case .loaded = state { true } else { false }
+        if !isRefresh {
+            state = .loading
+        }
         do {
             let banks = try await service.fetchBanks()
             allBanks = banks
             state = .loaded(banks)
         } catch BankError.networkUnavailable {
-            state = .error(AppStrings.Error.networkUnavailable)
+            state = .error(.networkUnavailable)
         } catch {
-            state = .error(AppStrings.Error.decodingFailed)
+            state = .error(.decodingFailed)
         }
+    }
+
+    func toggleExpand(bankName: String) {
+        if expandedBanks.contains(bankName) {
+            expandedBanks.remove(bankName)
+        } else {
+            expandedBanks.insert(bankName)
+        }
+    }
+
+    func isExpanded(bankName: String) -> Bool {
+        expandedBanks.contains(bankName)
     }
 }

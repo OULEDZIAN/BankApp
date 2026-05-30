@@ -12,5 +12,5 @@ enum LoadingState: Sendable {
     case idle
     case loading
     case loaded([Bank])
-    case error(String)
+    case error(BankError)
 }
