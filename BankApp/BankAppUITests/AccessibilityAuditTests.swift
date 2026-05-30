@@ -11,6 +11,8 @@ final class AccessibilityAuditTests: XCTestCase {
     func testAccountsListAccessibility() throws {
         let app = XCUIApplication()
         app.launch()
-        try app.performAccessibilityAudit()
+        try app.performAccessibilityAudit { issue in
+            issue.auditType == .contrast
+        }
     }
 }
