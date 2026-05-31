@@ -35,7 +35,12 @@ struct Account: Codable, Identifiable {
     let label: String
     let productCode: String
     let balance: Double
-    let operations: [Operation]
+    let operations: [BankOperation]
+
+    /// Operations sorted by date descending (RG05)
+    var sortedOperations: [BankOperation] {
+        operations.sorted { $0.timestamp > $1.timestamp }
+    }
 
     enum CodingKeys: String, CodingKey {
         case order, id, holder, role
@@ -48,16 +53,51 @@ struct Account: Codable, Identifiable {
     var formattedBalance: String {
         balance.formattedAsCurrency
     }
+
+    var isNegativeBalance: Bool {
+        balance < 0
+    }
 }
 
-// MARK: - Operation
+// MARK: - BankOperation
 
-struct Operation: Codable, Identifiable {
-    let id: String
+struct BankOperation: Codable, Identifiable {
+    let id: UUID
+    let operationId: String
     let title: String
     let amount: String
     let category: String
     let date: String
+
+    enum CodingKeys: String, CodingKey {
+        case operationId = "id"
+        case title, amount, category, date
+    }
+
+    init(
+        operationId: String,
+        title: String,
+        amount: String,
+        category: String,
+        date: String
+    ) {
+        self.id = UUID()
+        self.operationId = operationId
+        self.title = title
+        self.amount = amount
+        self.category = category
+        self.date = date
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
+        self.operationId = try container.decode(String.self, forKey: .operationId)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.amount = try container.decode(String.self, forKey: .amount)
+        self.category = try container.decode(String.self, forKey: .category)
+        self.date = try container.decode(String.self, forKey: .date)
+    }
 
     /// Converts the raw Unix timestamp string into a Swift Date
     var timestamp: Date {

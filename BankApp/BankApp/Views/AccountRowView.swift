@@ -11,21 +11,25 @@ struct AccountRowView: View {
     let account: Account
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(account.label)
-                    .font(.subheadline)
-                    .foregroundStyle(.primary)
-                Text(account.holder)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        NavigationLink {
+            OperationsView(account: account)
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(account.label)
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                    Text(account.holder)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text(account.formattedBalance)
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(account.isNegativeBalance ? Color.caAmountNegative : .primary)
             }
-            Spacer()
-            Text(account.formattedBalance)
-                .font(.subheadline.monospacedDigit())
-                .foregroundStyle(account.balance < 0 ? Color.caAmountNegative : .primary)
+            .padding(.leading)
         }
-        .padding(.leading, 16)
     }
 }
 
@@ -42,9 +46,11 @@ struct AccountRowView: View {
             productCode: "CJ", balance: -150.30, operations: []
         )
     ]
-    List {
-        ForEach(accounts) { account in
-            AccountRowView(account: account)
+    NavigationStack {
+        List {
+            ForEach(accounts) { account in
+                AccountRowView(account: account)
+            }
         }
     }
 }
