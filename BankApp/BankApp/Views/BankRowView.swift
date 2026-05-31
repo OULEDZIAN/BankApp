@@ -26,6 +26,9 @@ struct BankRowView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(bank.name)
+        .accessibilityValue(isExpanded ? AppStrings.Accessibility.Bank.expanded : AppStrings.Accessibility.Bank.collapsed)
+        .accessibilityHint(isExpanded ? AppStrings.Accessibility.Bank.collapseHint : AppStrings.Accessibility.Bank.expandHint)
     }
 }
 

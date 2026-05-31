@@ -26,6 +26,13 @@ extension DateFormatter {
         formatter.locale = Locale(identifier: "fr_FR")
         return formatter
     }()
+
+    static let dateLongFR: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.locale = Locale(identifier: "fr_FR")
+        return formatter
+    }()
 }
 
 // MARK: - Whitespace Normalization

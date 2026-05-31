@@ -24,6 +24,11 @@ struct OperationsView: View {
                     )
                     .frame(maxWidth: .infinity, alignment: .center)
                     .listRowBackground(Color.caBackgroundCard)
+                    .accessibilityLabel(
+                        viewModel.isNegativeBalance
+                            ? AppStrings.Accessibility.negativeBalance(viewModel.formattedBalance)
+                            : AppStrings.Accessibility.balance(viewModel.formattedBalance)
+                    )
             }
 
             Section {
@@ -44,6 +49,8 @@ struct OperationsView: View {
                                 operation.isNegative ? Color.caAmountNegative : .primary
                             )
                     }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(operation.title), \(operation.accessibilityDate), \(operation.accessibilityAmount)")
                 }
             }
         }

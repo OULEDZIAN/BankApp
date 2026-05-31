@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AccountsListView: View {
     @State private var viewModel: AccountsViewModel
-    
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     init(viewModel: AccountsViewModel = AccountsViewModel()) {
         self._viewModel = State(initialValue: viewModel)
     }
@@ -30,6 +31,7 @@ struct AccountsListView: View {
         switch viewModel.state {
         case .idle, .loading:
             ProgressView()
+                .accessibilityLabel(AppStrings.Accessibility.loading)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             
         case .loaded:
@@ -62,8 +64,12 @@ struct AccountsListView: View {
             bank: bank,
             isExpanded: viewModel.isExpanded(bankName: bank.name),
             onToggle: {
-                withAnimation {
+                if reduceMotion {
                     viewModel.toggleExpand(bankName: bank.name)
+                } else {
+                    withAnimation {
+                        viewModel.toggleExpand(bankName: bank.name)
+                    }
                 }
             }
         )
@@ -84,6 +90,7 @@ struct AccountsListView: View {
                 } header: {
                     Text(AppStrings.Section.creditAgricole)
                         .foregroundStyle(.primary)
+                        .accessibilityAddTraits(.isHeader)
                 }
             }
 
@@ -95,6 +102,7 @@ struct AccountsListView: View {
                 } header: {
                     Text(AppStrings.Section.otherBanks)
                         .foregroundStyle(.primary)
+                        .accessibilityAddTraits(.isHeader)
                 }
             }
         }

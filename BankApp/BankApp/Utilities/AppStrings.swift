@@ -23,4 +23,22 @@ enum AppStrings {
     enum Accounts {
         static let title = String(localized: "accounts.title")
     }
+    enum Accessibility {
+        enum Bank {
+            static let expanded = String(localized: "accessibility.bank.expanded")
+            static let collapsed = String(localized: "accessibility.bank.collapsed")
+            static let expandHint = String(localized: "accessibility.bank.expandHint")
+            static let collapseHint = String(localized: "accessibility.bank.collapseHint")
+        }
+        static let loading = String(localized: "accessibility.loading")
+        static func balance(_ amount: String) -> String {
+            String(format: String(localized: "accessibility.balance"), amount)
+        }
+        static func negativeBalance(_ amount: String) -> String {
+            String(format: String(localized: "accessibility.negativeBalance"), amount)
+        }
+        static func negativeAmount(_ amount: String) -> String {
+            String(format: String(localized: "accessibility.amount.negative"), amount)
+        }
+    }
 }

@@ -114,8 +114,20 @@ struct BankOperation: Codable, Identifiable {
         DateFormatter.dateFR.string(from: timestamp)
     }
 
+    var accessibilityDate: String {
+        DateFormatter.dateLongFR.string(from: timestamp)
+    }
+
     var formattedAmount: String {
         amount.formattedAsCurrency
+    }
+
+    var accessibilityAmount: String {
+        if isNegative {
+            let absolute = String(formattedAmount.dropFirst())
+            return AppStrings.Accessibility.negativeAmount(absolute)
+        }
+        return formattedAmount
     }
 
     var isNegative: Bool {
