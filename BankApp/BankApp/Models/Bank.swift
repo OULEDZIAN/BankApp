@@ -37,9 +37,14 @@ struct Account: Codable, Identifiable {
     let balance: Double
     let operations: [BankOperation]
 
-    /// Operations sorted by date descending (RG05)
+    /// Operations sorted by date descending (RG05), alphabetically by title on same date (RG06)
     var sortedOperations: [BankOperation] {
-        operations.sorted { $0.timestamp > $1.timestamp }
+        operations.sorted { lhs, rhs in
+            if lhs.timestamp != rhs.timestamp {
+                return lhs.timestamp > rhs.timestamp
+            }
+            return lhs.title.localizedCompare(rhs.title) == .orderedAscending
+        }
     }
 
     enum CodingKeys: String, CodingKey {
