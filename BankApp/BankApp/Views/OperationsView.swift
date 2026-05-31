@@ -33,21 +33,40 @@ struct OperationsView: View {
 
             Section {
                 ForEach(viewModel.sortedOperations) { operation in
-                    HStack {
+                    ViewThatFits(in: .horizontal) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(operation.title)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.primary)
+                                Text(operation.formattedDate)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Text(operation.formattedAmount)
+                                .font(.subheadline.monospacedDigit())
+                                .foregroundStyle(
+                                    operation.isNegative ? Color.caAmountNegative : .primary
+                                )
+                        }
+
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(operation.title)
-                                .font(.subheadline)
-                                .foregroundStyle(.primary)
+                            HStack {
+                                Text(operation.title)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text(operation.formattedAmount)
+                                    .font(.subheadline.monospacedDigit())
+                                    .foregroundStyle(
+                                        operation.isNegative ? Color.caAmountNegative : .primary
+                                    )
+                            }
                             Text(operation.formattedDate)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
-                        Spacer()
-                        Text(operation.formattedAmount)
-                            .font(.subheadline.monospacedDigit())
-                            .foregroundStyle(
-                                operation.isNegative ? Color.caAmountNegative : .primary
-                            )
                     }
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("\(operation.title), \(operation.accessibilityDate), \(operation.accessibilityAmount)")
