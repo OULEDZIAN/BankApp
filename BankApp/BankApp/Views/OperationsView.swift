@@ -9,28 +9,30 @@ import SwiftUI
 
 struct OperationsView: View {
     @State private var viewModel: OperationsViewModel
-
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+    
     init(account: Account) {
         self._viewModel = State(initialValue: OperationsViewModel(account: account))
     }
-
+    
     var body: some View {
         List {
             Section {
                 Text(viewModel.formattedBalance)
                     .font(.title.monospacedDigit().bold())
                     .foregroundStyle(
-                        viewModel.isNegativeBalance ? Color.caAmountNegative : .primary
+                        viewModel.isNegativeBalance && !differentiateWithoutColor
+                        ? Color.caAmountNegative : .primary
                     )
                     .frame(maxWidth: .infinity, alignment: .center)
                     .listRowBackground(Color.caBackgroundCard)
                     .accessibilityLabel(
                         viewModel.isNegativeBalance
-                            ? AppStrings.Accessibility.negativeBalance(viewModel.formattedBalance)
-                            : AppStrings.Accessibility.balance(viewModel.formattedBalance)
+                        ? AppStrings.Accessibility.negativeBalance(viewModel.formattedBalance)
+                        : AppStrings.Accessibility.balance(viewModel.formattedBalance)
                     )
             }
-
+            
             Section {
                 ForEach(viewModel.sortedOperations) { operation in
                     ViewThatFits(in: .horizontal) {
@@ -47,10 +49,15 @@ struct OperationsView: View {
                             Text(operation.formattedAmount)
                                 .font(.subheadline.monospacedDigit())
                                 .foregroundStyle(
-                                    operation.isNegative ? Color.caAmountNegative : .primary
+                                    operation.isNegative && !differentiateWithoutColor
+                                    ? Color.caAmountNegative : .primary
+                                )
+                                .fontWeight(
+                                    operation.isNegative && differentiateWithoutColor
+                                    ? .bold : .regular
                                 )
                         }
-
+                        
                         VStack(alignment: .leading, spacing: 4) {
                             HStack {
                                 Text(operation.title)
@@ -60,7 +67,12 @@ struct OperationsView: View {
                                 Text(operation.formattedAmount)
                                     .font(.subheadline.monospacedDigit())
                                     .foregroundStyle(
-                                        operation.isNegative ? Color.caAmountNegative : .primary
+                                        operation.isNegative && !differentiateWithoutColor
+                                        ? Color.caAmountNegative : .primary
+                                    )
+                                    .fontWeight(
+                                        operation.isNegative && differentiateWithoutColor
+                                        ? .bold : .regular
                                     )
                             }
                             Text(operation.formattedDate)
@@ -85,11 +97,11 @@ struct OperationsView: View {
         productCode: "CD", balance: 2031.84,
         operations: [
             BankOperation(operationId: "1", title: "Prelevement Netflix", amount: "-15,99",
-                      category: "leisure", date: "1644870724"),
+                          category: "leisure", date: "1644870724"),
             BankOperation(operationId: "2", title: "CB Amazon", amount: "-95,99",
-                      category: "online", date: "1644611558"),
+                          category: "online", date: "1644611558"),
             BankOperation(operationId: "3", title: "Virement salaire", amount: "2500,00",
-                      category: "income", date: "1644870724")
+                          category: "income", date: "1644870724")
         ]
     )
     NavigationStack {
