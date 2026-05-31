@@ -150,6 +150,108 @@ struct BankModelTests {
         }
     }
 
+    @Suite("Account.sortedOperations — RG06 (same date, alphabetical tiebreak)")
+    struct SortedOperationsRG06 {
+        private func makeAccount(operations: [BankOperation]) -> Account {
+            Account(
+                order: 1, id: "1", holder: "H", role: 1,
+                contractNumber: "C", label: "Test",
+                productCode: "P", balance: 0, operations: operations
+            )
+        }
+
+        private func makeBankOperation(
+            id: String = "1",
+            title: String = "Op",
+            date: String = "1644870724"
+        ) -> BankOperation {
+            BankOperation(operationId: id, title: title, amount: "0", category: "misc", date: date)
+        }
+
+        @Test func sameDateOperations_sortedAlphabetically() {
+            let sameDate = "1644870724"
+            let ops = [
+                makeBankOperation(id: "1", title: "Netflix", date: sameDate),
+                makeBankOperation(id: "2", title: "Amazon", date: sameDate),
+                makeBankOperation(id: "3", title: "Carrefour", date: sameDate)
+            ]
+            let account = makeAccount(operations: ops)
+
+            let titles = account.sortedOperations.map(\.title)
+            #expect(titles == ["Amazon", "Carrefour", "Netflix"])
+        }
+
+        @Test func sameDateTwoOperations_alphabetical() {
+            let sameDate = "1644870724"
+            let ops = [
+                makeBankOperation(id: "1", title: "Zara", date: sameDate),
+                makeBankOperation(id: "2", title: "Auchan", date: sameDate)
+            ]
+            let account = makeAccount(operations: ops)
+
+            #expect(account.sortedOperations[0].title == "Auchan")
+            #expect(account.sortedOperations[1].title == "Zara")
+        }
+
+        @Test func sameDateAlreadyAlphabetical_remainsUnchanged() {
+            let sameDate = "1644870724"
+            let ops = [
+                makeBankOperation(id: "1", title: "Alpha", date: sameDate),
+                makeBankOperation(id: "2", title: "Beta", date: sameDate)
+            ]
+            let account = makeAccount(operations: ops)
+
+            let titles = account.sortedOperations.map(\.title)
+            #expect(titles == ["Alpha", "Beta"])
+        }
+
+        @Test func mixedDatesAndSameDates_sortedCorrectly() {
+            let ops = [
+                makeBankOperation(id: "1", title: "Netflix", date: "1644870724"),
+                makeBankOperation(id: "2", title: "Amazon", date: "1644870724"),
+                makeBankOperation(id: "3", title: "Loyer", date: "1644611558"),
+                makeBankOperation(id: "4", title: "Salaire", date: "1700000000")
+            ]
+            let account = makeAccount(operations: ops)
+
+            let titles = account.sortedOperations.map(\.title)
+            #expect(titles == ["Salaire", "Amazon", "Netflix", "Loyer"])
+        }
+
+        @Test func threeDatesWithTiesOnEach_sortedCorrectly() {
+            let ops = [
+                makeBankOperation(id: "1", title: "C", date: "1000000000"),
+                makeBankOperation(id: "2", title: "A", date: "1000000000"),
+                makeBankOperation(id: "3", title: "Z", date: "2000000000"),
+                makeBankOperation(id: "4", title: "M", date: "2000000000"),
+                makeBankOperation(id: "5", title: "B", date: "1500000000")
+            ]
+            let account = makeAccount(operations: ops)
+
+            let titles = account.sortedOperations.map(\.title)
+            #expect(titles == ["M", "Z", "B", "A", "C"])
+        }
+
+        @Test func allSameDate_allSortedByTitle() {
+            let date = "1644870724"
+            let ops = (1...5).map { idx in
+                makeBankOperation(id: "\(idx)", title: "Op\(6 - idx)", date: date)
+            }
+            let account = makeAccount(operations: ops)
+
+            let titles = account.sortedOperations.map(\.title)
+            #expect(titles == ["Op1", "Op2", "Op3", "Op4", "Op5"])
+        }
+
+        @Test func singleOperationSameDate_returnsSingle() {
+            let ops = [makeBankOperation(id: "1", title: "Only", date: "1644870724")]
+            let account = makeAccount(operations: ops)
+
+            #expect(account.sortedOperations.count == 1)
+            #expect(account.sortedOperations[0].title == "Only")
+        }
+    }
+
     @Suite("Account.isNegativeBalance")
     struct IsNegativeBalance {
         private func makeAccount(balance: Double) -> Account {
