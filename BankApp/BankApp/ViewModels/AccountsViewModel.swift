@@ -12,10 +12,10 @@ import Foundation
 @Observable
 final class AccountsViewModel {
     private let service: BankServiceProtocol
-    private(set) var allBanks: [Bank] = []
+    private var allBanks: [Bank] = []
     private var expandedBanks: Set<String> = []
 
-    var state: LoadingState = .idle
+    private(set) var state: LoadingState = .idle
 
     var creditAgricoleBanks: [Bank] {
         allBanks.filter { $0.isCreditAgricole }.sorted { $0.name < $1.name }

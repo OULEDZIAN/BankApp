@@ -1,17 +1,22 @@
+//
+//  OperationsViewModel.swift
+//  BankApp
+//
+//  Created by AOZ on 31/05/2026.
+//
+
 import Foundation
 
-/// Provides sorted operations for a given account (RG05, RG06).
 @Observable
 final class OperationsViewModel {
-    let account: Account
+    private let account: Account
 
-    var sortedOperations: [Operation] {
-        account.operations.sorted { lhs, rhs in
-            if lhs.timestamp != rhs.timestamp {
-                return lhs.timestamp > rhs.timestamp
-            }
-            return lhs.title.localizedCompare(rhs.title) == .orderedAscending
-        }
+    var accountLabel: String { account.label }
+    var formattedBalance: String { account.formattedBalance }
+    var isNegativeBalance: Bool { account.isNegativeBalance }
+
+    var sortedOperations: [BankOperation] {
+        account.sortedOperations
     }
 
     init(account: Account) {

@@ -1,3 +1,10 @@
+//
+//  OperationsView.swift
+//  BankApp
+//
+//  Created by AOZ on 31/05/2026.
+//
+
 import SwiftUI
 
 struct OperationsView: View {
@@ -10,10 +17,10 @@ struct OperationsView: View {
     var body: some View {
         List {
             Section {
-                Text(viewModel.account.formattedBalance)
+                Text(viewModel.formattedBalance)
                     .font(.title.monospacedDigit().bold())
                     .foregroundStyle(
-                        viewModel.account.balance < 0 ? Color.caAmountNegative : .primary
+                        viewModel.isNegativeBalance ? Color.caAmountNegative : .primary
                     )
                     .frame(maxWidth: .infinity, alignment: .center)
                     .listRowBackground(Color.caBackgroundCard)
@@ -40,7 +47,7 @@ struct OperationsView: View {
                 }
             }
         }
-        .navigationTitle(viewModel.account.label)
+        .navigationTitle(viewModel.accountLabel)
         .background(Color.caBackgroundPrimary)
     }
 }
@@ -51,11 +58,11 @@ struct OperationsView: View {
         contractNumber: "CT001", label: "Compte de depot",
         productCode: "CD", balance: 2031.84,
         operations: [
-            Operation(operationId: "1", title: "Prelevement Netflix", amount: "-15,99",
+            BankOperation(operationId: "1", title: "Prelevement Netflix", amount: "-15,99",
                       category: "leisure", date: "1644870724"),
-            Operation(operationId: "2", title: "CB Amazon", amount: "-95,99",
+            BankOperation(operationId: "2", title: "CB Amazon", amount: "-95,99",
                       category: "online", date: "1644611558"),
-            Operation(operationId: "3", title: "Virement salaire", amount: "2500,00",
+            BankOperation(operationId: "3", title: "Virement salaire", amount: "2500,00",
                       category: "income", date: "1644870724")
         ]
     )

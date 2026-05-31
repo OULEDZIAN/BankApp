@@ -7,5 +7,7 @@
 
 // Tests are organized by feature in dedicated files:
 // - AccountsViewModelTests.swift
+// - BankModelTests.swift
 // - FormattersTests.swift
+// - OperationsViewModelTests.swift
 // - ServiceTests.swift

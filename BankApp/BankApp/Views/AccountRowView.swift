@@ -26,9 +26,9 @@ struct AccountRowView: View {
                 Spacer()
                 Text(account.formattedBalance)
                     .font(.subheadline.monospacedDigit())
-                    .foregroundStyle(account.balance < 0 ? Color.caAmountNegative : .primary)
+                    .foregroundStyle(account.isNegativeBalance ? Color.caAmountNegative : .primary)
             }
-            .padding(.leading, 16)
+            .padding(.leading)
         }
     }
 }

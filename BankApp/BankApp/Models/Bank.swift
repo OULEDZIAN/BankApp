@@ -35,7 +35,12 @@ struct Account: Codable, Identifiable {
     let label: String
     let productCode: String
     let balance: Double
-    let operations: [Operation]
+    let operations: [BankOperation]
+
+    /// Operations sorted by date descending (RG05)
+    var sortedOperations: [BankOperation] {
+        operations.sorted { $0.timestamp > $1.timestamp }
+    }
 
     enum CodingKeys: String, CodingKey {
         case order, id, holder, role
@@ -48,11 +53,15 @@ struct Account: Codable, Identifiable {
     var formattedBalance: String {
         balance.formattedAsCurrency
     }
+
+    var isNegativeBalance: Bool {
+        balance < 0
+    }
 }
 
-// MARK: - Operation
+// MARK: - BankOperation
 
-struct Operation: Codable, Identifiable {
+struct BankOperation: Codable, Identifiable {
     let id: UUID
     let operationId: String
     let title: String

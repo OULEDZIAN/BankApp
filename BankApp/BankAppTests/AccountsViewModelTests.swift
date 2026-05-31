@@ -1,3 +1,10 @@
+//
+//  AccountsViewModelTests.swift
+//  BankAppTests
+//
+//  Created by AOZ on 31/05/2026.
+//
+
 import Testing
 @testable import BankApp
 
