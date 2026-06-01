@@ -25,7 +25,6 @@ struct OperationsView: View {
                         ? Color.caAmountNegative : .primary
                     )
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .listRowBackground(Color.caBackgroundCard)
                     .accessibilityLabel(
                         viewModel.isNegativeBalance
                         ? AppStrings.Accessibility.negativeBalance(viewModel.formattedBalance)
@@ -86,7 +85,6 @@ struct OperationsView: View {
             }
         }
         .navigationTitle(viewModel.accountLabel)
-        .background(Color.caBackgroundPrimary)
     }
 }
 

@@ -19,7 +19,6 @@ struct AccountsListView: View {
         NavigationStack {
             content
                 .navigationTitle(AppStrings.Accounts.title)
-                .background(Color.caBackgroundPrimary)
         }
         .task {
             await viewModel.fetchBanks()
