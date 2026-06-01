@@ -29,6 +29,7 @@ struct AccountRowView: View {
                     .foregroundStyle(account.isNegativeBalance ? Color.caAmountNegative : .primary)
             }
             .padding(.leading)
+            .accessibilityElement(children: .combine)
         }
     }
 }

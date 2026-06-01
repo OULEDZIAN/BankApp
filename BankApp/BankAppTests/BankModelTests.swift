@@ -74,6 +74,25 @@ struct BankModelTests {
         }
     }
 
+    @Suite("BankOperation.accessibilityDate")
+    struct AccessibilityDate {
+        @Test func knownTimestamp_formatsLongDate() {
+            let operation = BankOperation(
+                operationId: "1", title: "Test", amount: "0",
+                category: "misc", date: "1644870724"
+            )
+            #expect(operation.accessibilityDate == "14 février 2022")
+        }
+
+        @Test func epochTimestamp_formatsLongDate() {
+            let operation = BankOperation(
+                operationId: "1", title: "Test", amount: "0",
+                category: "misc", date: "0"
+            )
+            #expect(operation.accessibilityDate == "1 janvier 1970")
+        }
+    }
+
     @Suite("Account.sortedOperations — RG05")
     struct SortedOperations {
         private func makeAccount(operations: [BankOperation]) -> Account {
@@ -272,6 +291,33 @@ struct BankModelTests {
 
         @Test func zeroBalance_returnsFalse() {
             #expect(!makeAccount(balance: 0).isNegativeBalance)
+        }
+    }
+
+    @Suite("BankOperation.accessibilityAmount")
+    struct AccessibilityAmount {
+        @Test func negativeAmount_prefixedWithMoins() {
+            let operation = BankOperation(
+                operationId: "1", title: "Test", amount: "-53,00",
+                category: "misc", date: "0"
+            )
+            #expect(operation.accessibilityAmount == "moins 53,00 €")
+        }
+
+        @Test func positiveAmount_unchangedFromFormatted() {
+            let operation = BankOperation(
+                operationId: "1", title: "Test", amount: "2500,00",
+                category: "misc", date: "0"
+            )
+            #expect(operation.accessibilityAmount == operation.formattedAmount)
+        }
+
+        @Test func zeroAmount_unchangedFromFormatted() {
+            let operation = BankOperation(
+                operationId: "1", title: "Test", amount: "0",
+                category: "misc", date: "0"
+            )
+            #expect(operation.accessibilityAmount == operation.formattedAmount)
         }
     }
 
