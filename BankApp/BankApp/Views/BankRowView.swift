@@ -11,7 +11,8 @@ struct BankRowView: View {
     let bank: Bank
     let isExpanded: Bool
     let onToggle: () -> Void
-    
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         Button(action: onToggle) {
             HStack {
@@ -20,6 +21,8 @@ struct BankRowView: View {
                     .foregroundStyle(.primary)
                 Spacer()
                 Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                    .contentTransition(.symbolEffect(.replace))
+                    .symbolEffectsRemoved(reduceMotion)
                     .foregroundStyle(Color.caAccent)
                     .accessibilityHidden(true)
             }
