@@ -206,19 +206,6 @@ Claude Agent lit ce fichier au démarrage de chaque session.
 L'accessibilité a été traitée comme une feature à part entière,
 pas comme un ajout de dernière minute.
 
-### VoiceOver
-
-| Élément | Annonce VoiceOver |
-|---|---|
-| Cellule banque fermée | "CA Centre-Est, replié, Double toucher pour déplier" |
-| Cellule banque ouverte | "CA Languedoc, déplié, Double toucher pour replier" |
-| Cellule compte | "Compte de dépôt, Corinne Martin, 425,84 euros" |
-| Solde positif | "Solde : 2 031,84 euros" |
-| Solde négatif | "Solde négatif : 150,30 euros" |
-| Opération | "Prélèvement Netflix, 14 février 2022, moins 15,99 euros" |
-| Spinner | "Chargement des comptes" |
-| Headers | "Crédit Agricole, en-tête" / "Autres Banques, en-tête" |
-
 ### Fonctionnalités accessibilité implémentées
 
 - **VoiceOver** — labels, hints, values sur tous les éléments interactifs
