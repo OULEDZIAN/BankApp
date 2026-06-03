@@ -10,6 +10,7 @@ import SwiftUI
 struct OperationsView: View {
     @State private var viewModel: OperationsViewModel
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     
     init(account: Account) {
         self._viewModel = State(initialValue: OperationsViewModel(account: account))
@@ -82,6 +83,11 @@ struct OperationsView: View {
                     }
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("\(operation.title), \(operation.accessibilityDate), \(operation.accessibilityAmount)")
+                    .scrollTransition { [reduceMotion] content, phase in
+                        content
+                            .opacity(phase.isIdentity || reduceMotion ? 1 : 0.7)
+                            .scaleEffect(phase.isIdentity || reduceMotion ? 1 : 0.97)
+                    }
                 }
             }
         }

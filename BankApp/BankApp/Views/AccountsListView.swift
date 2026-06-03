@@ -60,6 +60,7 @@ struct AccountsListView: View {
     
     @ViewBuilder
     private func bankCell(_ bank: Bank) -> some View {
+        let reduceMotion = reduceMotion
         BankRowView(
             bank: bank,
             isExpanded: viewModel.isExpanded(bankName: bank.name),
@@ -73,9 +74,19 @@ struct AccountsListView: View {
                 }
             }
         )
+        .scrollTransition { content, phase in
+            content
+                .opacity(phase.isIdentity || reduceMotion ? 1 : 0.7)
+                .scaleEffect(phase.isIdentity || reduceMotion ? 1 : 0.97)
+        }
         if viewModel.isExpanded(bankName: bank.name) {
             ForEach(bank.sortedAccounts) { account in
                 AccountRowView(account: account)
+                    .scrollTransition { content, phase in
+                        content
+                            .opacity(phase.isIdentity || reduceMotion ? 1 : 0.7)
+                            .scaleEffect(phase.isIdentity || reduceMotion ? 1 : 0.97)
+                    }
             }
         }
     }
